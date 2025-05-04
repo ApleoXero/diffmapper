@@ -1,0 +1,7 @@
+[project]
+name = "diffmapper"
+version = "0.1.0"
+description = "DiffMapper is an image comparision tool for computing differences between images, and generates a gradient mask for visualization."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
