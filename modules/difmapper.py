@@ -21,19 +21,28 @@ from pydantic import ValidationError
 from modules.models import Inputs, ProcessModel
 from modules.validators import Validators
 from modules.io import IO
+from modules.flags import PROCESS_FLAGS
 
 class DiffMapper:
     
     def __init__(self, image1:Union[str,Path], image2:Union[str,Path], output_dir:Union[str,Path]):
+        PROCESS_FLAGS.INIT = True
         if Validators.isFile(image1) and Validators.isFile(image2) and Validators.isDir(output_dir,mkdir=True):
             try:
                 self.inputs = Inputs(image1=image1,image2=image2,outputDir=output_dir)
+                PROCESS_FLAGS.INPUTS = True
             except ValidationError as e:
-                raise ValidationError(e)
+                PROCESS_FLAGS.INPUTS = False
+                PROCESS_FLAGS.meta['INPUTS'].append(str(e))
         else:
             raise Exception("Invalid File Path or Directory Path")
         
         self.io = IO()
         self.data = self.io.read([self.inputs.image1,self.inputs.image2])
-        
+        try:
+            self.processModel = ProcessModel(inputModel=self.inputs,imageObjects=self.data,metadata=None)
+            PROCESS_FLAGS.PROCESS_MODEL = True
+        except ValidationError as e:
+            PROCESS_FLAGS.PROCESS_MODEL = False
+            PROCESS_FLAGS.meta['PROCESS_MODEL'].append(str(e))
         

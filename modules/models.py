@@ -1,7 +1,6 @@
-from typing import Union
+from typing import Union,Optional
 from pathlib import Path
 from pydantic import BaseModel
-import numpy as np
 
 class Inputs(BaseModel):
     image1: Union[str,Path]
@@ -10,6 +9,5 @@ class Inputs(BaseModel):
 
 class ProcessModel(BaseModel):
     inputModel: Inputs
-    imageArray1: np.ndarray
-    imageArray2: np.ndarray
-    metadata: dict
+    imageObjects: list
+    metadata: Optional[dict]
